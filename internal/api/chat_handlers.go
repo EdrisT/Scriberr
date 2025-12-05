@@ -446,6 +446,7 @@ func (h *Handler) SendChatMessage(c *gin.Context) {
 		fmt.Printf("Failed to get context window for model %s: %v. Using default 4096.\n", session.Model, err)
 		contextWindow = 4096
 	}
+	fmt.Printf("Context window for model %s: %d.\n", session.Model, contextWindow)
 
 	// Build OpenAI messages including transcript context
 	var openaiMessages []llm.ChatMessage

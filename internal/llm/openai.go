@@ -328,6 +328,6 @@ func (s *OpenAIService) GetContextWindow(ctx context.Context, model string) (int
 		return 16385, nil // Most recent gpt-3.5-turbo is 16k
 	default:
 		// Default fallback
-		return 4096, nil
+		return 16384, nil
 	}
 }
