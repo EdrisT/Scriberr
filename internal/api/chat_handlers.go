@@ -88,7 +88,7 @@ func (h *Handler) getLLMService(ctx context.Context) (llm.Service, string, error
 		if cfg.APIKey == nil || *cfg.APIKey == "" {
 			return nil, cfg.Provider, fmt.Errorf("OpenAI API key not configured")
 		}
-		return llm.NewOpenAIService(*cfg.APIKey), cfg.Provider, nil
+		return llm.NewOpenAIService(*cfg.APIKey, cfg.OpenAIBaseURL), cfg.Provider, nil
 	case "ollama":
 		if cfg.BaseURL == nil || *cfg.BaseURL == "" {
 			return nil, cfg.Provider, fmt.Errorf("Ollama base URL not configured")
@@ -446,6 +446,7 @@ func (h *Handler) SendChatMessage(c *gin.Context) {
 		fmt.Printf("Failed to get context window for model %s: %v. Using default 4096.\n", session.Model, err)
 		contextWindow = 4096
 	}
+	fmt.Printf("Context window for model %s: %d.\n", session.Model, contextWindow)
 
 	// Build OpenAI messages including transcript context
 	var openaiMessages []llm.ChatMessage
@@ -467,12 +468,28 @@ func (h *Handler) SendChatMessage(c *gin.Context) {
 
 		var sb strings.Builder
 
+		// Get speaker mappings
+		mappings, err := h.speakerMappingRepo.ListByJob(c.Request.Context(), session.TranscriptionID)
+		speakerMap := make(map[string]string)
+		if err == nil {
+			for _, m := range mappings {
+				speakerMap[m.OriginalSpeaker] = m.CustomName
+			}
+		} else {
+			fmt.Printf("Failed to get speaker mappings for job %s: %v\n", session.TranscriptionID, err)
+		}
+
 		for _, seg := range t.Segments {
 			start := formatTime(seg.Start)
 			end := formatTime(seg.End)
 
+			speakerName := seg.Speaker
+			if customName, ok := speakerMap[speakerName]; ok {
+				speakerName = customName
+			}
+
 			fmt.Fprintf(&sb, "[%s] [%s - %s] %s\n",
-				seg.Speaker,
+				speakerName,
 				start,
 				end,
 				strings.TrimSpace(seg.Text),

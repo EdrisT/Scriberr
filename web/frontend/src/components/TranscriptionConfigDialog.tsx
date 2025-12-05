@@ -1782,6 +1782,26 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
               <Separator className="my-8" />
 
               <div className="space-y-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label htmlFor="align_model" className="text-gray-700 dark:text-gray-300">Custom Alignment Model</Label>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Info className="h-4 w-4 text-gray-400 cursor-help" />
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{PARAM_DESCRIPTIONS.align_model}</p>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                  <Input
+                    id="align_model"
+                    placeholder="default: none"
+                    value={params.align_model || ""}
+                    onChange={(e) => updateParam('align_model', e.target.value || undefined)}
+                    className="mt-3 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="no_align"
