@@ -150,7 +150,7 @@ const PARAM_DESCRIPTIONS = {
   verbose: "Show detailed progress and debug messages during transcription.",
   print_progress: "Display processing progress information in the console output.",
   hf_token: "Hugging Face API token required for accessing private or gated models.",
-  is_multi_track_enabled: "Enable multi-track transcription mode for processing individual speaker tracks. When enabled, diarization is automatically disabled as each track represents a single speaker."
+  is_multi_track_enabled: "Enable multi-track transcription mode for processing individual speaker tracks. When enabled, diarization is automatically disabled as each track represents a single speaker.",
   align_model: "Custom alignment model to use (e.g., KBLab/wav2vec2-large-voxrex-swedish).\nThe model format must be WhisperX compatible!\nLeave empty to use default.",
 };
 
@@ -181,7 +181,7 @@ const DEFAULT_PARAMS: WhisperXParams = {
   task: "transcribe",
   interpolate_method: "nearest",
   no_align: false,
-  return_char_alignments: false,
+  return_char_alignments: true,
   vad_method: "pyannote",
   vad_onset: 0.5,
   vad_offset: 0.363,
@@ -1241,8 +1241,8 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
                       </HoverCard>
                     </div>
                     <Select
-                      value={params.language || "auto"}
-                      onValueChange={(value) => updateParam('language', value === "auto" ? undefined : value)}
+                      value={params.language || "sv"}
+                      onValueChange={(value) => updateParam('language', value === "sv" ? undefined : value)}
                     >
                       <SelectTrigger className="mt-3 w-full min-w-0 bg-white dark:bg-carbon-800 border-carbon-300 dark:border-carbon-600 text-carbon-900 dark:text-carbon-100">
                         <SelectValue />
